@@ -7,7 +7,7 @@ A cross-platform CLI skill that renders a colorful smiley face UX in the termina
 在项目根目录运行一次：
 
 ```bash
-npx @bobibobu/yyb-skill
+npx @yyb_skill/yyb-skill
 ```
 
 这一条命令会自动完成：
@@ -59,7 +59,7 @@ node .yyb-skill/bin.js --simple   # 简洁模式
 ### npm (公网)
 
 ```bash
-npx @bobibobu/yyb-skill
+npx @yyb_skill/yyb-skill
 ```
 
 ### GitHub Packages

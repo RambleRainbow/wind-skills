@@ -1,5 +1,5 @@
 {
-  "name": "@bobibobu/yyb-skill",
+  "name": "@yyb_skill/yyb-skill",
   "version": "1.0.2",
   "description": "A cross-platform CLI skill that renders a smiley face UX, supporting Claude Code, Codex, Trae and other AI tools",
   "bin": "./bin/cli.js",
@@ -11,7 +11,7 @@
     ".claude/"
   ],
   "publishConfig": {
-    "registry": "https://npm.pkg.github.com"
+    "access": "public"
   },
   "keywords": [
     "claude-code",
