@@ -2,14 +2,12 @@
 
 A cross-platform CLI skill that renders a colorful smiley face UX in the terminal. Compatible with **Claude Code**, **OpenAI Codex**, **Trae**, and any tool that can execute shell commands.
 
-> 本项目托管在 Gitee：https://gitee.com/codethe/yyb_skill
-
 ## 一键安装
 
 在项目根目录运行一次：
 
 ```bash
-npx git+https://gitee.com/codethe/yyb_skill.git
+npx @bobibobu/yyb-skill
 ```
 
 这一条命令会自动完成：
@@ -54,6 +52,52 @@ node .yyb-skill/bin.js            # 花式模式
 node .yyb-skill/bin.js --simple   # 简洁模式
 ```
 
+## 从不同平台安装
+
+本包已发布到多个 npm 制品库，客户可根据网络环境选择最快的源：
+
+### npm (公网)
+
+```bash
+npx @bobibobu/yyb-skill
+```
+
+### GitHub Packages
+
+```bash
+# 配置 registry（只需一次）
+npm config set @bobibobu:registry https://npm.pkg.github.com
+
+# 安装
+npx @bobibobu/yyb-skill
+```
+
+### 极狐 GitLab (JihuLab) Package Registry
+
+```bash
+# 配置 registry（只需一次）
+npm config set @bobibobu:registry https://jihulab.com/api/v4/packages/npm/
+
+# 安装
+npx @bobibobu/yyb-skill
+```
+
+### 腾讯云 CNB npm 制品库
+
+```bash
+# 配置 registry（只需一次）
+npm config set @bobibobu:registry https://npm.cnb.cool/private_yyb/yybskill/-/packages/
+
+# 安装
+npx @bobibobu/yyb-skill
+```
+
+### Gitee（通过 Git 仓库直接安装）
+
+```bash
+npx git+https://gitee.com/codethe/yyb_skill.git
+```
+
 ## 输出效果
 
 ### 花式模式（默认）
@@ -86,16 +130,25 @@ node .yyb-skill/bin.js --simple   # 简洁模式
 ```
 😊 Hello from YYB Skill! 😊
 
-  ╔══════════════╗
-  ║              ║
-  ║   ◉      ◉   ║
-  ║              ║
-  ║   ╲______╱   ║
-  ║              ║
-  ╚══════════════╝
+  ╔════════════════╗
+  ║                ║
+  ║   ◉      ◉     ║
+  ║                ║
+  ║   ╲______╱     ║
+  ║                ║
+  ╚════════════════╝
 
   Claude Code · Codex · Trae Compatible
 ```
+
+## 代码仓库
+
+| 平台 | 地址 |
+|------|------|
+| Gitee | https://gitee.com/codethe/yyb_skill |
+| GitHub | https://github.com/bobibobu/financial-skills |
+| 极狐 GitLab | https://jihulab.com/bobibobu-group/bobibobu-project |
+| 腾讯云 CNB | https://cnb.cool/private_yyb/yyb_skill |
 
 ## License
 
