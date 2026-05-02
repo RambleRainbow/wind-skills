@@ -1,0 +1,31 @@
+[project]
+name = "wind-skills"
+version = "0.1.0"
+description = "Wind 万得金融 Skill 集合 — 测试套件"
+requires-python = ">=3.10"
+
+[project.optional-dependencies]
+test = [
+    "pytest>=8.0",
+    "pytest-asyncio>=0.24",
+    "pytest-timeout>=2.3",
+]
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+python_files = ["test_*.py"]
+python_classes = ["Test*"]
+python_functions = ["test_*"]
+addopts = [
+    "-v",
+    "--tb=short",
+    "--strict-markers",
+]
+markers = [
+    "smoke: 快速冒烟测试（无需 API Key）",
+    "mcp: 需要 MCP server 连接的集成测试",
+    "api: 需要 WIND_API_KEY 的端到端测试",
+    "slow: 执行时间较长的测试",
+]
+asyncio_mode = "auto"
+timeout = 30

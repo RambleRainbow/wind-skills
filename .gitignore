@@ -1,4 +1,18 @@
 tmp/
 
+# Python
+__pycache__/
+*.py[cod]
+*.egg-info/
+dist/
+build/
+.venv/
+venv/
+
+# pytest
+.pytest_cache/
+htmlcov/
+.coverage
+
 # 待测试的skill
 .agents/skills/wind-mcp-skill
