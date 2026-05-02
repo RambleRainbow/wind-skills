@@ -1,0 +1,4 @@
+tmp/
+
+# 待测试的skill
+.agents/skills/wind-mcp-skill
