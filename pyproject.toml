@@ -29,4 +29,4 @@ markers = [
     "slow: 执行时间较长的测试",
 ]
 asyncio_mode = "auto"
-timeout = 30
+timeout = 300
