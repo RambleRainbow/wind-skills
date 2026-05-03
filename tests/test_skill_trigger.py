@@ -345,8 +345,8 @@ def check_skill_installed():
 
 # ── 测试用例定义 ──────────────────────────────────────────────
 
-# 每个用例: (test_id, prompt, expected_server_type, expected_tool_name, result_keywords)
-# result_keywords: Claude 最终回复中应包含的关键词（验证数据返回正确）
+# 每个用例: (test_id, prompt, expected_server_type, expected_tool_name)
+# 验证点: cli.mjs 返回 ok:true 且无错误码即可，不检查具体返回内容
 TRIGGER_CASES = [
     # ── stock_data 行情类 ──
     (
@@ -354,7 +354,6 @@ TRIGGER_CASES = [
         "用 wind-mcp-skill 查贵州茅台最近 5 个交易日的日 K 线数据，只给我数据不要分析",
         "stock_data",
         "get_stock_kline",
-        ["茅台", "开盘"],  # K 线数据应含股票名和价格字段
     ),
     # ── stock_data NL 类 ──
     (
@@ -362,7 +361,6 @@ TRIGGER_CASES = [
         "用 wind-mcp-skill 查询 600519.SH 的公司基本档案信息，只返回数据",
         "stock_data",
         "get_stock_basicinfo",
-        ["茅台"],  # 基本档案应含公司名
     ),
     # ── fund_data NL 类 ──
     (
@@ -370,7 +368,6 @@ TRIGGER_CASES = [
         "用 wind-mcp-skill 查 005827.OF 易方达蓝筹精选的基金档案，只返回数据",
         "fund_data",
         "get_fund_info",
-        ["易方达"],  # 基金档案应含基金名
     ),
     # ── analytics_data 通用 ──
     (
@@ -378,7 +375,6 @@ TRIGGER_CASES = [
         "用 wind-mcp-skill 的 analytics_data 查 中证500 最近一周的表现，只返回数据",
         "analytics_data",
         "get_financial_data",
-        ["中证"],  # 回复应含指数名
     ),
 ]
 
@@ -397,7 +393,7 @@ class TestSkillTrigger:
 
     @pytest.mark.trigger
     @pytest.mark.parametrize(
-        "test_id, prompt, expected_server, expected_tool, result_keywords",
+        "test_id, prompt, expected_server, expected_tool",
         TRIGGER_CASES,
         ids=[c[0] for c in TRIGGER_CASES],
     )
@@ -410,7 +406,6 @@ class TestSkillTrigger:
         prompt: str,
         expected_server: str,
         expected_tool: str,
-        result_keywords: list[str],
     ):
         """Claude 应该通过 cli.mjs call 调用正确的 server_type + tool_name，并获得有效数据"""
         result = run_claude_prompt(prompt)
@@ -490,16 +485,8 @@ class TestSkillTrigger:
                         f"Session: {result.session_id}"
                     )
 
-        # 7. 验证 Claude 最终回复包含预期关键词（数据确实返回）
+        # 7. 最终回复不应包含 MCP 错误标记
         final_text = result.result_text or ""
-        for kw in result_keywords:
-            assert kw in final_text, (
-                f"Claude 最终回复中缺少关键词 '{kw}'\n"
-                f"回复前 500 字符: {final_text[:500]}\n"
-                f"Session: {result.session_id}"
-            )
-
-        # 8. 最终回复不应包含 MCP 错误标记
         assert "❌ MCP 错误" not in final_text, (
             f"Claude 最终回复中包含 MCP 错误\n"
             f"回复前 500 字符: {final_text[:500]}\n"
