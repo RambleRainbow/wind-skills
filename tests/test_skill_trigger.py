@@ -344,37 +344,340 @@ def check_skill_installed():
 
 
 # ── 测试用例定义 ──────────────────────────────────────────────
-
+#
 # 每个用例: (test_id, prompt, expected_server_type, expected_tool_name)
 # 验证点: cli.mjs 返回 ok:true 且无错误码即可，不检查具体返回内容
+#
+# 覆盖: 5 个 server_type × 22 个 tool × 每工具 2 条 = 44 条用例
+# 运行全量约需 ~60 分钟、~$6.00；可用 -k 筛选子集
+
 TRIGGER_CASES = [
-    # ── stock_data 行情类 ──
+    # ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+    #  stock_data — 9 tools
+    # ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+    # -- get_stock_kline (K 线历史数据) --
     (
-        "stock_kline",
+        "stock_kline_1",
         "用 wind-mcp-skill 查贵州茅台最近 5 个交易日的日 K 线数据，只给我数据不要分析",
         "stock_data",
         "get_stock_kline",
     ),
-    # ── stock_data NL 类 ──
     (
-        "stock_basicinfo",
+        "stock_kline_2",
+        "用 wind-mcp-skill 查比亚迪(002594.SZ)最近 3 个交易日的周 K 线，只返回数据",
+        "stock_data",
+        "get_stock_kline",
+    ),
+
+    # -- get_stock_quote (分钟级盘中行情) --
+    (
+        "stock_quote_1",
+        "用 wind-mcp-skill 查 600519.SH 贵州茅台的当日分钟级行情数据，只返回数据",
+        "stock_data",
+        "get_stock_quote",
+    ),
+    (
+        "stock_quote_2",
+        "用 wind-mcp-skill 查宁德时代(300750.SZ)今天的分钟行情报价，只返回数据",
+        "stock_data",
+        "get_stock_quote",
+    ),
+
+    # -- get_stock_price_indicators (价格指标快照) --
+    (
+        "stock_price_ind_1",
+        "用 wind-mcp-skill 查 600519.SH 茅台的最新价、涨跌幅等价格指标，只返回数据",
+        "stock_data",
+        "get_stock_price_indicators",
+    ),
+    (
+        "stock_price_ind_2",
+        "用 wind-mcp-skill 查招商银行(600036.SH)的最新成交价和换手率，只返回数据",
+        "stock_data",
+        "get_stock_price_indicators",
+    ),
+
+    # -- get_stock_basicinfo (公司基本档案) --
+    (
+        "stock_basicinfo_1",
         "用 wind-mcp-skill 查询 600519.SH 的公司基本档案信息，只返回数据",
         "stock_data",
         "get_stock_basicinfo",
     ),
-    # ── fund_data NL 类 ──
     (
-        "fund_info",
+        "stock_basicinfo_2",
+        "用 wind-mcp-skill 查中国平安(601318.SH)属于什么行业、主营业务是什么，只返回数据",
+        "stock_data",
+        "get_stock_basicinfo",
+    ),
+
+    # -- get_stock_fundamentals (财务基本面) --
+    (
+        "stock_fundamentals_1",
+        "用 wind-mcp-skill 查贵州茅台 2024 年报的 ROE、营业收入和净利润，只返回数据",
+        "stock_data",
+        "get_stock_fundamentals",
+    ),
+    (
+        "stock_fundamentals_2",
+        "用 wind-mcp-skill 查宁德时代(300750.SZ)最新的 PE-TTM 和 PB 估值，只返回数据",
+        "stock_data",
+        "get_stock_fundamentals",
+    ),
+
+    # -- get_stock_technicals (技术指标) --
+    (
+        "stock_technicals_1",
+        "用 wind-mcp-skill 查贵州茅台最近 20 个交易日的 MACD 技术指标，只返回数据",
+        "stock_data",
+        "get_stock_technicals",
+    ),
+    (
+        "stock_technicals_2",
+        "用 wind-mcp-skill 查比亚迪(002594.SZ)最近 10 日的收盘价和成交量，只返回数据",
+        "stock_data",
+        "get_stock_technicals",
+    ),
+
+    # -- get_stock_equity_holders (股本与股东) --
+    (
+        "stock_equity_1",
+        "用 wind-mcp-skill 查贵州茅台(600519.SH)的前十大股东持股明细，只返回数据",
+        "stock_data",
+        "get_stock_equity_holders",
+    ),
+    (
+        "stock_equity_2",
+        "用 wind-mcp-skill 查宁德时代(300750.SZ)的总股本和流通A股数量，只返回数据",
+        "stock_data",
+        "get_stock_equity_holders",
+    ),
+
+    # -- get_stock_events (公司事件与资本运作) --
+    (
+        "stock_events_1",
+        "用 wind-mcp-skill 查贵州茅台(600519.SH)的分红派息历史，只返回数据",
+        "stock_data",
+        "get_stock_events",
+    ),
+    (
+        "stock_events_2",
+        "用 wind-mcp-skill 查比亚迪(002594.SZ)的 IPO 首发信息，只返回数据",
+        "stock_data",
+        "get_stock_events",
+    ),
+
+    # -- get_risk_metrics (风险与波动性) --
+    (
+        "stock_risk_1",
+        "用 wind-mcp-skill 查贵州茅台(600519.SH)过去 1 年的 Beta 和年化波动率，只返回数据",
+        "stock_data",
+        "get_risk_metrics",
+    ),
+    (
+        "stock_risk_2",
+        "用 wind-mcp-skill 查宁德时代(300750.SZ)过去 1 年的最大回撤和夏普比率，只返回数据",
+        "stock_data",
+        "get_risk_metrics",
+    ),
+
+    # ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+    #  fund_data — 9 tools
+    # ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+    # -- get_fund_info (基金档案) --
+    (
+        "fund_info_1",
         "用 wind-mcp-skill 查 005827.OF 易方达蓝筹精选的基金档案，只返回数据",
         "fund_data",
         "get_fund_info",
     ),
-    # ── analytics_data 通用 ──
     (
-        "analytics_general",
-        "用 wind-mcp-skill 的 analytics_data 查 中证500 最近一周的表现，只返回数据",
+        "fund_info_2",
+        "用 wind-mcp-skill 查华夏成长混合(000001.OF)的基金经理和费率信息，只返回数据",
+        "fund_data",
+        "get_fund_info",
+    ),
+
+    # -- get_fund_kline (基金 K 线) --
+    (
+        "fund_kline_1",
+        "用 wind-mcp-skill 查科创50 ETF(588000.SH)最近 5 个交易日的日 K 线，只返回数据",
+        "fund_data",
+        "get_fund_kline",
+    ),
+    (
+        "fund_kline_2",
+        "用 wind-mcp-skill 查沪深300 ETF(510300.SH)最近 3 日的 K 线数据，只返回数据",
+        "fund_data",
+        "get_fund_kline",
+    ),
+
+    # -- get_fund_quote (基金分钟行情) --
+    (
+        "fund_quote_1",
+        "用 wind-mcp-skill 查科创50 ETF(588000.SH)今天的分钟级行情，只返回数据",
+        "fund_data",
+        "get_fund_quote",
+    ),
+    (
+        "fund_quote_2",
+        "用 wind-mcp-skill 查沪深300 ETF(510300.SH)当日的分钟盘中数据，只返回数据",
+        "fund_data",
+        "get_fund_quote",
+    ),
+
+    # -- get_fund_price_indicators (基金价格指标) --
+    (
+        "fund_price_ind_1",
+        "用 wind-mcp-skill 查科创50 ETF(588000.SH)的最新净值和溢折率，只返回数据",
+        "fund_data",
+        "get_fund_price_indicators",
+    ),
+    (
+        "fund_price_ind_2",
+        "用 wind-mcp-skill 查沪深300 ETF(510300.SH)的最新价和涨跌幅，只返回数据",
+        "fund_data",
+        "get_fund_price_indicators",
+    ),
+
+    # -- get_fund_financials (基金财务报表与分红) --
+    (
+        "fund_financials_1",
+        "用 wind-mcp-skill 查易方达蓝筹精选(005827.OF)的基金利润和分红数据，只返回数据",
+        "fund_data",
+        "get_fund_financials",
+    ),
+    (
+        "fund_financials_2",
+        "用 wind-mcp-skill 查华夏成长(000001.OF)的管理费和托管费，只返回数据",
+        "fund_data",
+        "get_fund_financials",
+    ),
+
+    # -- get_fund_holdings (基金持仓与资产配置) --
+    (
+        "fund_holdings_1",
+        "用 wind-mcp-skill 查易方达蓝筹精选(005827.OF)的重仓股持仓明细，只返回数据",
+        "fund_data",
+        "get_fund_holdings",
+    ),
+    (
+        "fund_holdings_2",
+        "用 wind-mcp-skill 查华夏成长(000001.OF)的行业配置情况，只返回数据",
+        "fund_data",
+        "get_fund_holdings",
+    ),
+
+    # -- get_fund_performance (基金业绩表现) --
+    (
+        "fund_performance_1",
+        "用 wind-mcp-skill 查易方达蓝筹精选(005827.OF)的年化收益率和同类排名，只返回数据",
+        "fund_data",
+        "get_fund_performance",
+    ),
+    (
+        "fund_performance_2",
+        "用 wind-mcp-skill 查华夏成长(000001.OF)的最大回撤和夏普比率，只返回数据",
+        "fund_data",
+        "get_fund_performance",
+    ),
+
+    # -- get_fund_shareholders (基金持有人与资金流动) --
+    (
+        "fund_shareholders_1",
+        "用 wind-mcp-skill 查易方达蓝筹精选(005827.OF)的持有人结构（机构与个人占比），只返回数据",
+        "fund_data",
+        "get_fund_shareholders",
+    ),
+    (
+        "fund_shareholders_2",
+        "用 wind-mcp-skill 查华夏成长(000001.OF)的申购赎回和规模变动，只返回数据",
+        "fund_data",
+        "get_fund_shareholders",
+    ),
+
+    # -- get_fund_company_info (基金管理公司) --
+    (
+        "fund_company_1",
+        "用 wind-mcp-skill 查易方达基金管理公司的基本信息和管理规模，只返回数据",
+        "fund_data",
+        "get_fund_company_info",
+    ),
+    (
+        "fund_company_2",
+        "用 wind-mcp-skill 查华夏基金管理公司的基金经理团队和资产配置，只返回数据",
+        "fund_data",
+        "get_fund_company_info",
+    ),
+
+    # ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+    #  analytics_data — 1 tool
+    # ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+    # -- get_financial_data (通用金融分析) --
+    (
+        "analytics_1",
+        "用 wind-mcp-skill 的 analytics_data 查中证500指数最近一周的表现，只返回数据",
         "analytics_data",
         "get_financial_data",
+    ),
+    (
+        "analytics_2",
+        "用 wind-mcp-skill 的 analytics_data 查中国A股市场过去一个月的平均成交量，只返回数据",
+        "analytics_data",
+        "get_financial_data",
+    ),
+
+    # ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+    #  economic_data — 1 tool
+    # ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+    # -- get_economic_data (宏观/行业经济指标) --
+    (
+        "economic_1",
+        "用 wind-mcp-skill 的 economic_data 查中国最近 6 个月的 CPI 同比数据，只返回数据",
+        "economic_data",
+        "get_economic_data",
+    ),
+    (
+        "economic_2",
+        "用 wind-mcp-skill 的 economic_data 查中国最近一年的 GDP 增速，只返回数据",
+        "economic_data",
+        "get_economic_data",
+    ),
+
+    # ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+    #  financial_docs — 2 tools
+    # ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+    # -- get_company_announcements (上市公司公告) --
+    (
+        "announcements_1",
+        "用 wind-mcp-skill 的 financial_docs 查贵州茅台最近的公司公告，只返回数据",
+        "financial_docs",
+        "get_company_announcements",
+    ),
+    (
+        "announcements_2",
+        "用 wind-mcp-skill 的 financial_docs 查比亚迪(002594.SZ)最近的年报公告，只返回数据",
+        "financial_docs",
+        "get_company_announcements",
+    ),
+
+    # -- get_financial_news (财经新闻) --
+    (
+        "news_1",
+        "用 wind-mcp-skill 的 financial_docs 查最近关于新能源汽车的财经新闻，只返回数据",
+        "financial_docs",
+        "get_financial_news",
+    ),
+    (
+        "news_2",
+        "用 wind-mcp-skill 的 financial_docs 查最近关于半导体芯片的财经新闻，只返回数据",
+        "financial_docs",
+        "get_financial_news",
     ),
 ]
 
@@ -387,8 +690,7 @@ class TestSkillTrigger:
     1. 触发了 wind-mcp-skill（通过 Bash 调用 cli.mjs）
     2. 选择了正确的 server_type
     3. 调用了正确的 tool_name
-    4. cli.mjs 返回 ok:true（数据成功获取）
-    5. Claude 最终回复包含预期的金融数据关键词
+    4. cli.mjs 返回 ok:true 且无错误码
     """
 
     @pytest.mark.trigger
